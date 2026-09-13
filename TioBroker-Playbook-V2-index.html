@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1020">
+<title>TioBroker • Playbook Comercial V2</title>
+<style>
+  :root{
+    --bg:#080d18;
+    --bg2:#0d1424;
+    --card:#111b2f;
+    --card2:#15233b;
+    --stroke:#23375a;
+    --text:#f6f8ff;
+    --muted:#9fb2cf;
+    --blue:#5aa7ff;
+    --blue2:#3488ff;
+    --violet:#8667ff;
+    --green:#49d39b;
+    --amber:#ffc967;
+    --danger:#ff7a8a;
+    --shadow:0 18px 50px rgba(0,0,0,.35);
+    --radius:22px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 10% 0%, rgba(52,136,255,.18), transparent 26rem),
+      radial-gradient(circle at 95% 5%, rgba(134,103,255,.16), transparent 24rem),
+      linear-gradient(180deg,var(--bg),#0a1120 55%,#0b1322);
+  }
+  button,input,textarea{font:inherit}
+  button{cursor:pointer}
+  .app{max-width:1240px;margin:0 auto;padding:18px 14px 42px}
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:10px 0 14px;
+    backdrop-filter:blur(14px);
+    background:linear-gradient(180deg,rgba(8,13,24,.97),rgba(8,13,24,.80),transparent);
+  }
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .logo{
+    width:42px;height:42px;border-radius:14px;
+    display:grid;place-items:center;font-weight:900;font-size:18px;
+    background:linear-gradient(145deg,var(--blue2),var(--violet));
+    box-shadow:0 10px 28px rgba(74,126,255,.3);
+  }
+  .brand h1{font-size:18px;margin:0;line-height:1.1}
+  .brand span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+  .badge{
+    flex:0 0 auto;
+    border:1px solid rgba(90,167,255,.28);
+    color:#cfe4ff;background:rgba(90,167,255,.10);
+    padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;
+  }
+
+  .hero{
+    padding:10px 2px 18px;
+  }
+  .hero h2{
+    font-size:clamp(28px,7vw,48px);
+    line-height:1.03;margin:0 0 12px;letter-spacing:-.035em;
+    max-width:850px;
+  }
+  .hero p{margin:0;color:var(--muted);font-size:15px;line-height:1.55;max-width:760px}
+  .hero strong{
+    background:linear-gradient(90deg,#8cc4ff,#ad9cff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .main-grid{display:grid;gap:16px}
+  .panel{
+    border:1px solid rgba(76,107,153,.34);
+    border-radius:var(--radius);
+    background:linear-gradient(180deg,rgba(17,27,47,.94),rgba(13,22,39,.94));
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .panel-head{padding:18px 18px 0}
+  .kicker{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+    color:#bcd7ff;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(90,167,255,.09)}
+  .panel h3{margin:10px 0 6px;font-size:22px}
+  .panel .desc{color:var(--muted);font-size:14px;line-height:1.45;margin:0}
+  .panel-body{padding:16px 18px 18px}
+  label{display:block;color:#c9d6ea;font-size:13px;font-weight:800;margin:0 0 8px}
+  textarea{
+    width:100%;min-height:138px;resize:vertical;
+    border:1px solid #2c456f;border-radius:18px;
+    padding:15px 15px 46px;
+    color:var(--text);
+    background:#0a1324;
+    outline:none;
+    line-height:1.5;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.01);
+  }
+  textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(90,167,255,.10)}
+  .textarea-wrap{position:relative}
+  .char{position:absolute;right:12px;bottom:11px;color:#60799d;font-size:11px}
+  .primary{
+    width:100%;min-height:52px;border:0;border-radius:16px;
+    color:#07111f;font-weight:950;
+    background:linear-gradient(135deg,#74b6ff,#6f7dff 55%,#9a72ff);
+    box-shadow:0 12px 26px rgba(76,120,255,.28);
+    margin-top:12px;
+  }
+  .primary:active{transform:translateY(1px)}
+  .secondary{
+    border:1px solid #2d456b;background:#132039;color:#e9f1ff;
+    border-radius:14px;padding:11px 13px;font-weight:800;
+  }
+  .ghost{
+    border:1px solid #263c5f;background:transparent;color:#cfe0f8;
+    border-radius:14px;padding:10px 12px;font-weight:800;
+  }
+  .hint{margin-top:10px;color:#7f95b4;font-size:12px;line-height:1.45}
+
+  .suggestions{display:none;margin-top:14px}
+  .suggestions.show{display:block}
+  .suggestion-title{font-size:12px;color:#9bb0ce;font-weight:800;margin-bottom:8px}
+  .suggestion-list{display:flex;flex-direction:column;gap:8px}
+  .suggestion{
+    width:100%;text-align:left;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:#101c31;border:1px solid #263c61;color:#edf5ff;
+    padding:13px 14px;border-radius:15px;
+  }
+  .suggestion b{font-size:14px}
+  .conf{
+    flex:0 0 auto;font-size:11px;color:#b8cdf0;
+    background:#1b2b47;border:1px solid #2c466f;
+    border-radius:999px;padding:4px 8px
+  }
+
+  .route-empty{
+    min-height:250px;display:grid;place-items:center;text-align:center;padding:28px;
+    color:#8298b8
+  }
+  .route-empty .icon{
+    width:62px;height:62px;border-radius:20px;display:grid;place-items:center;margin:0 auto 13px;
+    background:linear-gradient(145deg,rgba(90,167,255,.16),rgba(134,103,255,.14));
+    border:1px solid rgba(111,149,255,.24);font-size:28px
+  }
+  .route{display:none}
+  .route.show{display:block}
+  .route-top{
+    padding:18px;
+    background:
+      radial-gradient(circle at 85% 5%,rgba(134,103,255,.16),transparent 13rem),
+      linear-gradient(180deg,rgba(20,35,61,.95),rgba(14,24,42,.95));
+    border-bottom:1px solid #223858;
+  }
+  .state-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .state{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;
+    color:#d6e7ff;background:#1b2a47;border:1px solid #2c466f;
+    border-radius:999px;padding:7px 10px
+  }
+  .route h4{font-size:24px;margin:14px 0 8px;line-height:1.15}
+  .route .goal{color:#b8c9e2;line-height:1.48;font-size:14px;margin:0}
+  .route-content{padding:18px}
+  .mini-grid{display:grid;gap:10px;margin-bottom:14px}
+  .mini{
+    border:1px solid #253b5e;border-radius:16px;padding:13px 14px;background:#0f1a2c
+  }
+  .mini strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+  .mini p{margin:0;color:#b9c9e1;font-size:13px;line-height:1.43}
+  .mini.good strong{color:var(--green)}
+  .mini.warn strong{color:var(--amber)}
+  .message-box{
+    position:relative;
+    background:#091322;border:1px solid #29456e;border-radius:18px;
+    padding:16px 14px 14px;margin-top:10px;
+  }
+  .message-box .label{color:#9eb3d3;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .message{
+    white-space:pre-wrap;color:#f4f8ff;line-height:1.55;font-size:14px;padding-right:2px
+  }
+  .copy{
+    width:100%;margin-top:12px;border:1px solid rgba(90,167,255,.38);
+    background:linear-gradient(180deg,#1a3153,#152844);color:#eaf4ff;
+    min-height:46px;border-radius:14px;font-weight:900;
+  }
+  .next{
+    margin-top:14px;border-radius:16px;padding:14px;
+    background:linear-gradient(135deg,rgba(73,211,155,.10),rgba(90,167,255,.08));
+    border:1px solid rgba(73,211,155,.25)
+  }
+  .next strong{display:block;color:#91ebc2;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+  .next p{margin:0;color:#cde3dc;font-size:13px;line-height:1.45}
+
+  .browser{margin-top:16px}
+  .browser-head{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:0 2px 10px}
+  .browser h3{margin:0;font-size:20px}.browser p{margin:4px 0 0;color:var(--muted);font-size:12px}
+  .tabs{
+    display:flex;gap:8px;overflow:auto;padding:2px 0 10px;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;border:1px solid #263c61;background:#0f1a2d;color:#aebfda;
+    padding:9px 12px;border-radius:999px;font-weight:850;font-size:12px
+  }
+  .tab.active{background:#1d3357;border-color:#3d68a4;color:#fff}
+  .flow-grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .flow-card{
+    text-align:left;border:1px solid #263b5e;background:linear-gradient(180deg,#111d31,#0e1829);
+    border-radius:18px;padding:14px;color:#eef5ff;min-height:92px;
+  }
+  .flow-card:hover{border-color:#3c639b}
+  .flow-code{font-size:11px;color:#7fa9e5;font-weight:950;letter-spacing:.08em}
+  .flow-card h5{font-size:15px;margin:7px 0 5px}
+  .flow-card p{margin:0;color:#91a6c3;font-size:12px;line-height:1.38}
+
+  .toast{
+    position:fixed;z-index:50;left:50%;bottom:22px;transform:translate(-50%,20px);
+    background:#eaf4ff;color:#0b1423;border-radius:999px;padding:10px 15px;
+    font-size:12px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;
+    box-shadow:0 12px 30px rgba(0,0,0,.35)
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .footer{color:#627999;font-size:11px;text-align:center;padding:22px 6px 4px}
+
+  @media (min-width:760px){
+    .app{padding:24px 22px 56px}
+    .topbar{padding-top:12px}
+    .brand h1{font-size:20px}
+    .main-grid{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);align-items:start}
+    .panel{min-height:100%}
+    .flow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .mini-grid{grid-template-columns:1fr 1fr}
+    textarea{min-height:170px}
+  }
+  @media (min-width:1080px){
+    .flow-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .app{padding-left:28px;padding-right:28px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">TB</div>
+      <div>
+        <h1>TioBroker Playbook</h1>
+        <span>Assistente comercial • V2</span>
+      </div>
+    </div>
+    <div class="badge">Mobile-first</div>
+  </header>
+
+  <section class="hero">
+    <h2>Você cola o que o corretor falou. <strong>O playbook mostra o próximo passo.</strong></h2>
+    <p>Use como um GPS da conversa: identifique o cenário, copie uma mensagem-base e siga o fluxo sem transformar a abordagem em um script robótico.</p>
+  </section>
+
+  <section class="main-grid">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="kicker"><span class="dot"></span>Analisar conversa</div>
+        <h3>O que o corretor disse?</h3>
+        <p class="desc">Cole a última mensagem exatamente como recebeu. A análise acontece no próprio navegador, sem servidor e sem API paga.</p>
+      </div>
+      <div class="panel-body">
+        <label for="leadText">Mensagem recebida</label>
+        <div class="textarea-wrap">
+          <textarea id="leadText" maxlength="1200" placeholder="Ex.: 'Hoje eu faço tudo pelo WhatsApp e uma planilha.'"></textarea>
+          <div class="char"><span id="count">0</span>/1200</div>
+        </div>
+        <button class="primary" id="analyzeBtn">Analisar e encontrar fluxo</button>
+        <div class="hint">Se a classificação não tiver confiança suficiente, o sistema mostra os caminhos mais prováveis para você escolher.</div>
+
+        <div id="suggestions" class="suggestions">
+          <div class="suggestion-title">Fluxos mais prováveis</div>
+          <div class="suggestion-list" id="suggestionList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="routeEmpty" class="route-empty">
+        <div>
+          <div class="icon">↗</div>
+          <b>O próximo passo aparece aqui</b>
+          <p style="margin:8px 0 0;max-width:320px;line-height:1.45">Analise a mensagem ou abra um fluxo manualmente mais abaixo.</p>
+        </div>
+      </div>
+      <div id="route" class="route">
+        <div class="route-top">
+          <div class="state-row">
+            <span class="state" id="stateCode">A1</span>
+            <button class="ghost" id="clearRoute">Limpar</button>
+          </div>
+          <h4 id="routeTitle">Fluxo</h4>
+          <p class="goal" id="routeGoal"></p>
+        </div>
+        <div class="route-content">
+          <div class="mini-grid">
+            <div class="mini good">
+              <strong>Como agir</strong>
+              <p id="routeAct"></p>
+            </div>
+            <div class="mini warn">
+              <strong>Evite</strong>
+              <p id="routeAvoid"></p>
+            </div>
+          </div>
+
+          <div class="message-box">
+            <div class="label">Mensagem-base</div>
+            <div class="message" id="routeMessage"></div>
+            <button class="copy" id="copyBtn">Copiar mensagem</button>
+          </div>
+
+          <div class="next">
+            <strong>Saída desejada</strong>
+            <p id="routeNext"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="browser">
+    <div class="browser-head">
+      <div>
+        <h3>Biblioteca de fluxos</h3>
+        <p>Abra manualmente quando você já souber o cenário.</p>
+      </div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="flow-grid" id="flowGrid"></div>
+  </section>
+
+  <div class="footer">TioBroker • Playbook comercial local • Nenhuma mensagem é enviada para servidores</div>
+</div>
+
+<div class="toast" id="toast">Mensagem copiada</div>
+
+<script>
+const FLOWS = [
+  {
+    id:"entrada_assunto", code:"E1", cat:"Entrada", title:"Perguntou “do que se trata?”",
+    summary:"Transparência rápida sem despejar um pitch.",
+    goal:"Explicar por que você chamou e abrir espaço para o diagnóstico.",
+    act:"Responda o motivo do contato em poucas linhas e termine em algo fácil de responder.",
+    avoid:"Continuar fazendo suspense, mandar apresentação ou falar preço agora.",
+    message:`Claro! Eu sou o João, fundador do TioBroker. A gente criou uma ferramenta de gestão voltada pra corretores e imobiliárias, pra organizar clientes, leads e o acompanhamento das negociações.
+
+Queria entender como vocês fazem isso hoje e ver se faria sentido te mostrar o que construímos.`,
+    next:"Aguardar como ele se organiza e ir para WhatsApp, planilha, CRM ou sistema da imobiliária."
+  },
+  {
+    id:"entrada_decisor", code:"E2", cat:"Entrada", title:"Ele é o responsável",
+    summary:"Você caiu na pessoa certa.",
+    goal:"Descobrir o processo atual sem transformar a conversa em interrogatório.",
+    act:"Contextualize em uma frase e faça uma única pergunta operacional.",
+    avoid:"Pitch longo, lista de funcionalidades ou pedido de reunião antes de entender o cenário.",
+    message:`Boa! Perguntei porque sou fundador do TioBroker, uma ferramenta de gestão voltada pra corretores e imobiliárias.
+
+Hoje vocês usam algum sistema pra organizar os leads, retornos e andamento das negociações ou fazem esse controle mais por WhatsApp e planilha?`,
+    next:"Classificar a ferramenta atual e seguir para o fluxo correspondente."
+  },
+  {
+    id:"entrada_nao_decisor", code:"E3", cat:"Entrada", title:"Não é o responsável",
+    summary:"Não descarte o corretor; ele pode virar cliente solo.",
+    goal:"Separar oportunidade individual de oportunidade da imobiliária.",
+    act:"Primeiro entenda como ele próprio trabalha. Só depois busque o responsável, se necessário.",
+    avoid:"Pedir o telefone do gerente de forma seca e perder um potencial plano solo.",
+    message:`Tranquilo! E no seu dia a dia como corretor, você usa algum sistema pra organizar seus clientes e retornos ou faz mais esse controle por conta própria?`,
+    next:"Se houver dor individual, seguir como corretor solo. Se não, pedir quem cuida da parte de sistema/CRM."
+  },
+  {
+    id:"perfil_autonomo", code:"P1", cat:"Perfil", title:"Corretor autônomo",
+    summary:"Lead importante para escala do plano solo.",
+    goal:"Descobrir rapidamente como ele organiza clientes e follow-ups.",
+    act:"Trate o corretor solo como oportunidade principal, não como lead menor.",
+    avoid:"Perguntar por gerente, imobiliária ou estrutura que não existe.",
+    message:`Entendi! E hoje, trabalhando por conta própria, como você costuma organizar seus clientes e retornos: mais pelo WhatsApp, planilha ou já usa algum CRM?`,
+    next:"Direcionar para WhatsApp, planilha, ambos ou CRM."
+  },
+  {
+    id:"diag_whatsapp", code:"D1", cat:"Diagnóstico", title:"Usa WhatsApp",
+    summary:"Dor potencial de follow-up e informação espalhada.",
+    goal:"Gerar percepção de risco e transformar curiosidade em demonstração.",
+    act:"Conecte a fala dele a um problema real: retorno esquecido, conversa perdida e negociação esfriando.",
+    avoid:"Demonizar o WhatsApp ou afirmar que ele com certeza perde clientes.",
+    message:`Entendi. Então foi exatamente por isso que te perguntei.
+
+Quando tudo fica no WhatsApp, é muito fácil um retorno ficar pra depois, um cliente se perder no meio das conversas ou uma oportunidade esfriar sem perceber.
+
+Foi justamente pra resolver isso que a gente criou o TioBroker: você consegue visualizar quem precisa de retorno, em que etapa está cada negociação e manter seus clientes organizados sem depender só do WhatsApp.
+
+Se eu te mostrar rapidinho como isso funciona na prática, você consegue me dizer se faria sentido pra sua rotina?`,
+    next:"Se disser “mostra”, pare de vender por mensagem e vá para agendamento."
+  },
+  {
+    id:"diag_planilha", code:"D2", cat:"Diagnóstico", title:"Usa planilha",
+    summary:"Processo organizado, porém manual e fragmentado.",
+    goal:"Mostrar valor de centralização sem desmerecer a planilha.",
+    act:"Reconheça que a planilha funciona e destaque o custo conforme o volume cresce.",
+    avoid:"Falar que planilha é ruim ou antiquada.",
+    message:`Entendi. Planilha ajuda bastante no controle, principalmente quando o volume ainda é mais enxuto.
+
+O ponto que a gente tenta resolver no TioBroker é reduzir esse trabalho manual conforme entram mais clientes e retornos: você centraliza cliente, negociação, tarefa e acompanhamento no mesmo lugar.
+
+Se eu te mostrar em uns 10 min como isso fica na prática, você consegue avaliar se facilitaria sua rotina?`,
+    next:"Interesse → reunião. Resistência → perguntar qual parte da planilha mais dá trabalho hoje."
+  },
+  {
+    id:"diag_ambos", code:"D3", cat:"Diagnóstico", title:"WhatsApp + planilha",
+    summary:"Forte sinal de informação dividida entre ferramentas.",
+    goal:"Evidenciar duplicidade de controle e valor da centralização.",
+    act:"Mostre que o problema não é usar as ferramentas, mas precisar cruzar informação entre elas.",
+    avoid:"Dizer que o processo dele é bagunçado.",
+    message:`Entendi. Então hoje você acaba dividindo o controle entre WhatsApp e planilha.
+
+O TioBroker foi pensado justamente pra centralizar cliente, histórico, etapa da negociação e retorno no mesmo lugar, sem você precisar ficar cruzando informação entre ferramentas.
+
+Se você topar, eu te mostro isso numa chamada rápida e você vê se faria sentido pra sua rotina.`,
+    next:"Aceitou → oferecer duas opções concretas de horário."
+  },
+  {
+    id:"diag_crm", code:"D4", cat:"Diagnóstico", title:"Já usa CRM",
+    summary:"Não é rejeição; pode existir uma brecha real.",
+    goal:"Descobrir insatisfação antes de apresentar o TioBroker.",
+    act:"Valide a organização atual e procure uma lacuna específica.",
+    avoid:"Atacar concorrente, comparar sem contexto ou perguntar preço do CRM atual.",
+    message:`Boa! Então você já está bem mais organizado nessa parte.
+
+Hoje esse CRM te atende bem ou ainda tem alguma coisa que acaba ficando por fora no dia a dia, tipo WhatsApp, retornos, agenda ou acompanhamento das negociações?`,
+    next:"Se houver dor, aprofunde só 1 ponto e convide para conhecer. Se estiver 100% satisfeito, encerre bem."
+  },
+  {
+    id:"diag_sistema_imob", code:"D5", cat:"Diagnóstico", title:"A imobiliária já tem sistema",
+    summary:"Pode existir oportunidade individual ou B2B.",
+    goal:"Entender se o corretor realmente usa o sistema ou mantém controles paralelos.",
+    act:"Pergunte sobre o uso real no dia a dia, não sobre a existência do sistema.",
+    avoid:"Insistir em trocar o sistema da imobiliária sem dor identificada.",
+    message:`Entendi. E no seu dia a dia você usa esse sistema da imobiliária pra acompanhar seus clientes e retornos ou ainda acaba controlando alguma parte por conta própria?`,
+    next:"Controle próprio → plano solo. Sistema atende tudo → encerrar ou chegar ao decisor, se houver abertura."
+  },
+  {
+    id:"obj_sem_interesse", code:"O1", cat:"Objeções", title:"“Não tenho interesse”",
+    summary:"Preservar marca vale mais do que uma insistência ruim.",
+    goal:"Encerrar com respeito e deixar boa impressão.",
+    act:"Aceite a resposta e saia rápido.",
+    avoid:"“Só uma última coisa…”, desconto surpresa, link ou insistência.",
+    message:`Tranquilo! Obrigado por me responder. Forte abraço e sucesso nas vendas por aí!`,
+    next:"Encerrar. Não fazer follow-up comercial imediato."
+  },
+  {
+    id:"obj_sem_tempo", code:"O2", cat:"Objeções", title:"Sem tempo agora",
+    summary:"Transformar adiamento em próximo passo concreto.",
+    goal:"Remarcar com baixa fricção.",
+    act:"Ofereça opções objetivas em vez de “quando você puder?”.",
+    avoid:"Pressionar ou deixar totalmente aberto.",
+    message:`Sem problema. Pra não te tomar tempo agora, a gente deixa certinho pra outro momento.
+
+Pra você fica melhor eu te chamar amanhã de manhã ou no período da tarde?`,
+    next:"Escolheu período → oferecer um horário específico."
+  },
+  {
+    id:"obj_preco", code:"O3", cat:"Objeções", title:"Perguntou preço cedo",
+    summary:"Responder sem esconder, mas trazer contexto de valor.",
+    goal:"Não transformar preço em única variável antes da demonstração.",
+    act:"Se a tabela estiver definida, responda objetivamente e convide para ver o encaixe.",
+    avoid:"Fugir da pergunta ou inventar escassez.",
+    message:`Claro. A gente tem planos diferentes conforme o perfil e quantidade de usuários.
+
+Antes de te indicar o que faria mais sentido, prefiro entender rapidinho como você trabalha hoje pra não te empurrar um plano errado. Posso te fazer uma pergunta rápida?`,
+    next:"Diagnosticar perfil e depois informar o plano correto."
+  },
+  {
+    id:"reuniao_mostra", code:"R1", cat:"Reunião", title:"Ele disse “mostra”",
+    summary:"Sinal claro para sair da conversa e entrar na demo.",
+    goal:"Converter curiosidade em reunião marcada.",
+    act:"Reduza fricção: diga que é rápido e peça escolha simples.",
+    avoid:"Continuar explicando o produto por texto.",
+    message:`Fechado! Acho melhor te mostrar em uma chamada rápida, porque em uns 10 min você já consegue ver se isso faria sentido pra sua rotina.
+
+Pra você fica melhor de manhã ou à tarde?`,
+    next:"Depois da escolha, ofereça um horário específico e confirme."
+  },
+  {
+    id:"reuniao_confirmar", code:"R2", cat:"Reunião", title:"Reunião marcada",
+    summary:"Confirmação curta, sem novo pitch.",
+    goal:"Reduzir esquecimento e alinhar expectativa.",
+    act:"Confirme horário e diga que será rápido.",
+    avoid:"Mandar apresentação, preço ou texto longo antes da reunião.",
+    message:`Perfeito! Combinado então.
+
+A gente se fala no horário marcado e eu te mostro o TioBroker na prática, bem direto, pra você conseguir avaliar se faria sentido na sua rotina.`,
+    next:"No dia, mandar link e confirmação curta."
+  },
+  {
+    id:"reuniao_noshow", code:"R3", cat:"Reunião", title:"No-show / não apareceu",
+    summary:"Recuperar sem cobrança.",
+    goal:"Remarcar com duas opções concretas.",
+    act:"Presuma imprevisto e facilite a nova decisão.",
+    avoid:"“Você vai entrar?”, cobrança ou mensagem passivo-agressiva.",
+    message:`Tudo certo por aí? Imagino que tenha surgido algum imprevisto.
+
+Quero te mostrar aquilo que comentamos porque acho que pode facilitar bastante sua rotina. Posso separar 10 min em dois horários e você me diz qual funciona melhor pra você.`,
+    next:"Enviar duas opções concretas de horário na mesma conversa."
+  },
+  {
+    id:"pos_demo_teste", code:"F1", cat:"Pós-demo", title:"Gostou da apresentação",
+    summary:"Converter interesse em teste sem fricção.",
+    goal:"Levar para o período gratuito imediatamente.",
+    act:"Reforce que o teste não exige cartão ou pagamento.",
+    avoid:"Criar burocracia ou pedir decisão de compra na hora.",
+    message:`Boa! Então o melhor próximo passo é você testar no seu dia a dia.
+
+A gente libera 1 mês grátis e você não precisa cadastrar cartão, fazer Pix ou assumir compromisso agora. Você cria a conta, usa de verdade e vê se encaixa na sua rotina.`,
+    next:"Enviar acesso e combinar um ponto de acompanhamento."
+  },
+  {
+    id:"pos_followup", code:"F2", cat:"Pós-demo", title:"Follow-up depois da demo",
+    summary:"Retomar contexto, não perguntar só “e aí?”.",
+    goal:"Descobrir avanço, travas e próxima ação.",
+    act:"Mencione o ponto que mais chamou atenção na reunião.",
+    avoid:"Follow-up genérico ou cobrança de compra.",
+    message:`Oi! Passando pra saber como ficou aquele ponto que a gente conversou sobre organizar melhor os retornos e negociações.
+
+Você conseguiu testar isso na sua rotina ou apareceu alguma dúvida no caminho?`,
+    next:"Dúvida → resolver. Testou e gostou → fechamento. Não testou → remover a barreira."
+  }
+];
+
+const KEYWORDS = [
+  {id:"diag_ambos", re:/(whats(app)?|zap|wpp).*(planilha|excel)|(planilha|excel).*(whats(app)?|zap|wpp)/i, score:100},
+  {id:"obj_sem_interesse", re:/n[aã]o tenho interesse|sem interesse|n[aã]o quero|n[aã]o me interessa/i, score:100},
+  {id:"reuniao_mostra", re:/mostra|pode mostrar|quero ver|me mostra|me apresenta|pode apresentar/i, score:96},
+  {id:"entrada_assunto", re:/do que se trata|qual (é|e|seria) (o )?assunto|qual (é|e) (a )?d[uú]vida|em que posso ajudar/i, score:93},
+  {id:"diag_crm", re:/\bcrm\b|salesforce|rd station|kenlo|jetimob|imobzi|vista software/i, score:91},
+  {id:"diag_planilha", re:/planilha|excel|google sheets/i, score:88},
+  {id:"diag_whatsapp", re:/whats(app)?|zap|wpp/i, score:86},
+  {id:"perfil_autonomo", re:/aut[oô]nomo|trabalho sozinho|por conta pr[oó]pria|sou corretor/i, score:84},
+  {id:"entrada_nao_decisor", re:/n[aã]o sou (o )?respons[aá]vel|n[aã]o cuido|n[aã]o [ée] comigo|parte administrativa/i, score:83},
+  {id:"entrada_decisor", re:/eu mesmo|sou eu|eu cuido|sou respons[aá]vel/i, score:82},
+  {id:"diag_sistema_imob", re:/imobili[aá]ria.*(sistema|crm|respons[aá]vel)|eles j[aá] t[eê]m|empresa j[aá] (tem|possui)|a gente j[aá] tem sistema/i, score:80},
+  {id:"obj_sem_tempo", re:/sem tempo|agora n[aã]o|muito corrido|depois|semana que vem|outro dia/i, score:76},
+  {id:"obj_preco", re:/quanto custa|qual (o )?valor|pre[cç]o|mensalidade|plano/i, score:75},
+  {id:"reuniao_noshow", re:/n[aã]o consegui entrar|n[aã]o pude|imprevisto|reagendar|remarcar/i, score:74}
+];
+
+let currentFlow = null;
+let currentCategory = "Todos";
+
+const $ = s => document.querySelector(s);
+const tabs = ["Todos","Entrada","Perfil","Diagnóstico","Objeções","Reunião","Pós-demo"];
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function scoreMessage(text){
+  const t = text.trim();
+  if(!t) return [];
+  const scores = {};
+  KEYWORDS.forEach(k=>{
+    if(k.re.test(t)){
+      scores[k.id] = Math.max(scores[k.id]||0, k.score);
+    }
+  });
+
+  // pequenos ajustes de contexto
+  if(/whats(app)?|zap|wpp/i.test(t) && /s[oó]|apenas|tudo/i.test(t)){
+    scores["diag_whatsapp"] = Math.max(scores["diag_whatsapp"]||0, 92);
+  }
+  if(/planilha|excel/i.test(t) && /whats(app)?|zap|wpp/i.test(t)){
+    scores["diag_ambos"] = 100;
+  }
+
+  return Object.entries(scores)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,3)
+    .map(([id,score])=>({flow:FLOWS.find(f=>f.id===id),score}));
+}
+
+function renderSuggestions(items){
+  const wrap = $("#suggestions");
+  const list = $("#suggestionList");
+  if(!items.length){
+    wrap.classList.add("show");
+    list.innerHTML = `
+      <div class="suggestion" style="cursor:default">
+        <div>
+          <b>Não encontrei um encaixe forte</b>
+          <div style="color:#91a6c3;font-size:12px;margin-top:4px">Use a biblioteca abaixo ou escolha o fluxo mais próximo.</div>
+        </div>
+      </div>`;
+    return;
+  }
+  wrap.classList.add("show");
+  list.innerHTML = items.map((x,i)=>`
+    <button class="suggestion" data-open="${x.flow.id}">
+      <div>
+        <b>${escapeHtml(x.flow.title)}</b>
+        <div style="color:#91a6c3;font-size:12px;margin-top:4px">${escapeHtml(x.flow.summary)}</div>
+      </div>
+      <span class="conf">${x.score}%</span>
+    </button>`).join("");
+  list.querySelectorAll("[data-open]").forEach(btn=>{
+    btn.addEventListener("click",()=>openFlow(btn.dataset.open));
+  });
+  openFlow(items[0].flow.id);
+}
+
+function openFlow(id){
+  const f = FLOWS.find(x=>x.id===id);
+  if(!f) return;
+  currentFlow = f;
+  $("#routeEmpty").style.display = "none";
+  $("#route").classList.add("show");
+  $("#stateCode").textContent = f.code;
+  $("#routeTitle").textContent = f.title;
+  $("#routeGoal").textContent = f.goal;
+  $("#routeAct").textContent = f.act;
+  $("#routeAvoid").textContent = f.avoid;
+  $("#routeMessage").textContent = f.message;
+  $("#routeNext").textContent = f.next;
+  if(window.innerWidth < 760){
+    $("#route").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+function renderTabs(){
+  $("#tabs").innerHTML = tabs.map(t=>`
+    <button class="tab ${t===currentCategory?"active":""}" data-tab="${t}">${t}</button>
+  `).join("");
+  $("#tabs").querySelectorAll("[data-tab]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      currentCategory = btn.dataset.tab;
+      renderTabs(); renderFlowGrid();
+    });
+  });
+}
+
+function renderFlowGrid(){
+  const list = currentCategory==="Todos" ? FLOWS : FLOWS.filter(f=>f.cat===currentCategory);
+  $("#flowGrid").innerHTML = list.map(f=>`
+    <button class="flow-card" data-flow="${f.id}">
+      <div class="flow-code">${f.code} • ${f.cat}</div>
+      <h5>${escapeHtml(f.title)}</h5>
+      <p>${escapeHtml(f.summary)}</p>
+    </button>
+  `).join("");
+  $("#flowGrid").querySelectorAll("[data-flow]").forEach(btn=>{
+    btn.addEventListener("click",()=>openFlow(btn.dataset.flow));
+  });
+}
+
+function toast(msg="Mensagem copiada"){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(window.__toast); window.__toast=setTimeout(()=>t.classList.remove("show"),1600);
+}
+
+$("#leadText").addEventListener("input",e=>{
+  $("#count").textContent = e.target.value.length;
+});
+
+$("#analyzeBtn").addEventListener("click",()=>{
+  const txt=$("#leadText").value;
+  renderSuggestions(scoreMessage(txt));
+});
+
+$("#copyBtn").addEventListener("click",async()=>{
+  if(!currentFlow) return;
+  try{
+    await navigator.clipboard.writeText(currentFlow.message);
+    toast();
+  }catch{
+    const ta=document.createElement("textarea");
+    ta.value=currentFlow.message;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
+    toast();
+  }
+});
+
+$("#clearRoute").addEventListener("click",()=>{
+  currentFlow=null;
+  $("#route").classList.remove("show");
+  $("#routeEmpty").style.display="grid";
+});
+
+renderTabs();
+renderFlowGrid();
+</script>
+</body>
+</html>
